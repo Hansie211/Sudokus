@@ -8,8 +8,6 @@ namespace Sudokus.Logic.Techniques {
 
     public class SingleOptionTechnique : Technique {
 
-        private static int ident = 0;
-
         public SingleOptionTechnique( SudokuSolver solver ) : base( solver ) {
         }
 

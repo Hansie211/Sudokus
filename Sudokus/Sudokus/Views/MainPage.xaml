@@ -3,13 +3,604 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:Sudokus.Converter"
              mc:Ignorable="d"
-             x:Class="Sudokus.Views.MainPage">
+             x:Class="Sudokus.Views.MainPage" NavigationPage.HasNavigationBar="False">
 
-    <StackLayout>
-        <!-- Place new controls here -->
+    <ContentPage.Resources>
+
+        <converters:CellValueConverter x:Key="CellValueConverter" />
+        <converters:IsSelectedConverter x:Key="IsSelectedConverter" />
+
+        <Style TargetType="Label" x:Key="CellText">
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="VerticalTextAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="Large" />
+        </Style>
+
+        <Style TargetType="Frame" x:Key="CellFrame">
+            <Setter Property="HasShadow"        Value="False" />
+            <Setter Property="Padding"          Value="0" />
+            <Setter Property="WidthRequest"     Value="40" />
+            <Setter Property="HeightRequest"    Value="40" />
+            <Setter Property="BorderColor"      Value="Black" />
+            <Setter Property="CornerRadius"     Value="0" />
+            <Setter Property="Margin"           Value="0" />
+        </Style>
+
+        <Style TargetType="Frame" x:Key="SquareFrame">
+            <Setter Property="BackgroundColor" Value="White" />
+            <Setter Property="HasShadow" Value="False" />
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+
+        <Style TargetType="StackLayout" x:Key="BoardStack">
+
+        </Style>
+        
+        <Style TargetType="StackLayout" x:Key="RowStack">
+
+        </Style>
+
+        <Style TargetType="StackLayout" x:Key="SquareRowStack">
+
+            <Setter Property="Spacing" Value="1" />
+        </Style>
+
+        <Style TargetType="Frame" x:Key="SelectionFrame">
+            <Setter Property="WidthRequest" Value="30" />
+            <Setter Property="HeightRequest" Value="30" />
+            <Setter Property="HasShadow" Value="False" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+
+        <Style TargetType="Label" x:Key="SelectionText">
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="VerticalTextAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="Medium" />
+        </Style>
 
 
-    </StackLayout>
+    </ContentPage.Resources>
 
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="100" />
+        </Grid.RowDefinitions>
+
+        <Grid HorizontalOptions="Center" VerticalOptions="Center">
+
+            <StackLayout Style="{StaticResource BoardStack}">
+
+                <StackLayout Style="{StaticResource RowStack}" Orientation="Horizontal">
+                    <Frame Style="{StaticResource SquareFrame}">
+                        <StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[0], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[1], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[2], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[3], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[4], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[5], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[6], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[7], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[8], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
+
+                    <Frame Style="{StaticResource SquareFrame}">
+                        <StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[0], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[1], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[2], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[3], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[4], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[5], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[6], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[7], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[8], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
+                
+                    <Frame Style="{StaticResource SquareFrame}">
+                        <StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[0], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[1], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[2], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[3], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[4], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[5], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[6], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[7], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[8], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
+                </StackLayout>
+
+                <StackLayout Style="{StaticResource RowStack}" Orientation="Horizontal">
+                    <Frame Style="{StaticResource SquareFrame}">
+                        <StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[0], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[1], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[2], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[3], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[4], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[5], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[6], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[7], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[8], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
+
+                    <Frame Style="{StaticResource SquareFrame}">
+                        <StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[0], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[1], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[2], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[3], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[4], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[5], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[6], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[7], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[8], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
+
+                    <Frame Style="{StaticResource SquareFrame}">
+                        <StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[0], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[1], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[2], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[3], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[4], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[5], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[6], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[7], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[8], Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
+                </StackLayout>
+
+                <StackLayout Style="{StaticResource RowStack}" Orientation="Horizontal">
+                        <Frame Style="{StaticResource SquareFrame}">
+                            <StackLayout>
+                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[0], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[1], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[2], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[3], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[4], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[5], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[6], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[7], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[8], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+
+                                </StackLayout>
+                            </StackLayout>
+                        </Frame>
+
+                        <Frame Style="{StaticResource SquareFrame}">
+                            <StackLayout>
+                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[0], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[1], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[2], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[3], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[4], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[5], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[6], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[7], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[8], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+
+                                </StackLayout>
+                            </StackLayout>
+                        </Frame>
+
+                        <Frame Style="{StaticResource SquareFrame}">
+                            <StackLayout>
+                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[0], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[1], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[2], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[3], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[4], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[5], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[6], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[7], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+                                    <Frame Style="{StaticResource CellFrame}">
+                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[8], Converter={StaticResource CellValueConverter}}" />
+                                    </Frame>
+
+                                </StackLayout>
+                            </StackLayout>
+                        </Frame>
+                    </StackLayout>
+
+            </StackLayout>
+
+        </Grid>
+
+        <StackLayout Orientation="Horizontal" Grid.Row="1" HorizontalOptions="Center">
+            <Frame Style="{StaticResource SelectionFrame}">
+                <Label Style="{StaticResource SelectionText}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="1" />
+                    </Label.GestureRecognizers>
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="1">
+                            <Setter Property="FontAttributes" Value="Bold" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                    1
+                    </Label>
+            </Frame>
+            <Frame Style="{StaticResource SelectionFrame}">
+                <Label Style="{StaticResource SelectionText}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="2"  />
+                    </Label.GestureRecognizers>
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="2">
+                            <Setter Property="FontAttributes" Value="Bold" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                    2
+                </Label>
+            </Frame>
+            <Frame Style="{StaticResource SelectionFrame}">
+                <Label Style="{StaticResource SelectionText}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="3"/>
+                    </Label.GestureRecognizers>
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="3">
+                            <Setter Property="FontAttributes" Value="Bold" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                    3
+                </Label>
+            </Frame>
+            <Frame Style="{StaticResource SelectionFrame}">
+                <Label Style="{StaticResource SelectionText}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="4"/>
+                    </Label.GestureRecognizers>
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="4">
+                            <Setter Property="FontAttributes" Value="Bold" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                    4
+                </Label>
+            </Frame>
+            <Frame Style="{StaticResource SelectionFrame}">
+                <Label Style="{StaticResource SelectionText}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="5"/>
+                    </Label.GestureRecognizers>
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="5">
+                            <Setter Property="FontAttributes" Value="Bold" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                    5
+                </Label>
+            </Frame>
+            <Frame Style="{StaticResource SelectionFrame}">
+                <Label Style="{StaticResource SelectionText}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="6"/>
+                    </Label.GestureRecognizers>
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="6">
+                            <Setter Property="FontAttributes" Value="Bold" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                    6
+                </Label>
+            </Frame>
+            <Frame Style="{StaticResource SelectionFrame}">
+                <Label Style="{StaticResource SelectionText}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="7"/>
+                    </Label.GestureRecognizers>
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="7">
+                            <Setter Property="FontAttributes" Value="Bold" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                    7
+                </Label>
+            </Frame>
+            <Frame Style="{StaticResource SelectionFrame}">
+                <Label Style="{StaticResource SelectionText}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="8"/>
+                    </Label.GestureRecognizers>
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="8">
+                            <Setter Property="FontAttributes" Value="Bold" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                    8
+                </Label>
+            </Frame>
+            <Frame Style="{StaticResource SelectionFrame}">
+                <Label Style="{StaticResource SelectionText}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="9"/>
+                    </Label.GestureRecognizers>
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="9">
+                            <Setter Property="FontAttributes" Value="Bold" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                    9
+                </Label>
+            </Frame>
+        </StackLayout>
+        
+    </Grid>
+    
 </ContentPage>

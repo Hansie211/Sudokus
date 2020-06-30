@@ -1,7 +1,8 @@
-﻿using SudokuData.core;
+﻿using SudokuData.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SudokuData {
 
@@ -15,6 +16,8 @@ namespace SudokuData {
         public Row[] Rows { get; }
         public Column[] Columns { get; }
         public Square[] Squares { get; }
+
+        public int Lol { get; } = 9;
 
         public Cell this[ int x, int y ] {
 
@@ -84,6 +87,39 @@ namespace SudokuData {
             }
 
             result.InitStructures();
+
+            return result;
+        }
+
+        public static Sudoku GenerateRandom() {
+
+            Sudoku result = GenerateEmpty();
+
+            Random random = new Random();
+            Action<Square> FillRandom = ( square ) => {
+
+                List<int> values = new List<int>( Enumerable.Range( 1, BOARDSIZE ) );
+
+                // Shuffle
+                for( int i = 0; i < values.Count; i++ ){
+
+                    int j = random.Next( 0, values.Count );
+
+                    int temp = values[i];
+                    values[i] = values[j];
+                    values[j] = temp;
+                }
+
+                // Fill
+                for( int i = 0; i < square.Cells.Length; i++ ){
+
+                    square.Cells[i].Value = values[i];
+                }
+            };
+
+            FillRandom( result.Squares[ 0 ] );
+            FillRandom( result.Squares[ 4 ] );
+            FillRandom( result.Squares[ 8 ] );
 
             return result;
         }

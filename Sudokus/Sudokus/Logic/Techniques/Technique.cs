@@ -23,8 +23,8 @@ namespace Sudokus.Logic.Techniques {
             //}
 
             // yield return new NakedSubsetTechnique( solver );
-            yield return new SingleOptionTechnique( solver );
             yield return new TwoDirectionTechnique( solver );
+            yield return new SingleOptionTechnique( solver );
         }
 
         public abstract void ReduceOptions();

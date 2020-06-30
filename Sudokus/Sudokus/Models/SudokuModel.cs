@@ -5,21 +5,36 @@ using System.Text;
 
 namespace Sudokus.Models {
 
+
+    public class SquareModel {
+
+        public CellModel[] Cells { get; }
+
+        public SquareModel() {
+
+            Cells = new CellModel[9];
+        }
+    }
+
     public class SudokuModel {
 
-        public Sudoku Data { get; }
-        public List<int>[,] Notes { get; }
+        public Sudoku Solution { get; }
+        public SquareModel[] Squares { get; }
 
         public SudokuModel() {
 
-            Data    = Sudoku.GenerateEmpty();
-            Notes   = new List<int>[ Sudoku.BOARDSIZE, Sudoku.BOARDSIZE ];
+            Solution = Sudoku.GenerateRandom();
+            Squares  = new SquareModel[9];
 
-            for ( int x = 0; x < Sudoku.BOARDSIZE; x++ ) {
-                for ( int y = 0; y < Sudoku.BOARDSIZE; y++ ) {
+            for( int i = 0; i < Squares.Length; i++ ) {
 
-                    Notes[ x, y ] = new List<int>( Sudoku.BOARDSIZE );
+                Squares[i] = new SquareModel();
+
+                for( int j = 0; j < Squares[i].Cells.Length; j++ ) {
+
+                    Squares[i].Cells[j] = new CellModel( Solution.Squares[i].Cells[j].Value );
                 }
+
             }
         }
 

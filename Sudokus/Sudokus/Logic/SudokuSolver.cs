@@ -161,19 +161,31 @@ namespace Sudokus.Logic {
             return null;
         }
 
+        private int GetOptionsCount() {
+
+            int result = 0;
+            foreach( var optionList in Options ) {
+
+                result += optionList.Count();
+            }
+
+            return result;
+        }
+
         public bool Solve( bool canFork = true ) {
 
-            bool found;
+            int count;
             do {
 
-                found = false;
+                count = GetOptionsCount();
+
                 foreach ( Technique technique in Techniques ) {
 
                     technique.ReduceOptions();
-                    found = FillValuesWithOneOption() || found;
+                    FillValuesWithOneOption();
                 }
 
-            } while ( found );
+            } while ( count != GetOptionsCount() );
 
             if ( Data.IsCorrect() ) {
 

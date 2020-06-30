@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SudokuData.core {
+namespace SudokuData.Core {
 
     public class Cell {
 
