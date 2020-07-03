@@ -6,9 +6,9 @@ namespace SudokuData {
 
     public struct RawSudoku {
 
-        public int[,] Data { get; }
+        public byte[,] Data { get; }
 
-        public int this[ int x, int y ] {
+        public byte this[ int x, int y ] {
 
             get => Data[x,y];
             set {
@@ -18,7 +18,7 @@ namespace SudokuData {
 
         public RawSudoku( int size ) {
 
-            Data = new int[ size, size ];
+            Data = new byte[ size, size ];
         }
     }
 }

@@ -63,21 +63,5 @@ namespace Sudokus.Components {
             base.OnBindingContextChanged();
         }
 
-        public CellLabel() {
-
-            //DataTrigger constantTrigger = new DataTrigger( typeof(Label) ){
-            //    Value = true,
-            //    Binding = new Binding(){
-            //        Path = "IsConstant",
-            //    },
-            //};
-
-            //constantTrigger.Setters.Add( new Setter() {
-            //    Property = Label.FontAttributesProperty,
-            //    Value = FontAttributes.Bold,
-            //} );
-
-            //this.Triggers.Add( constantTrigger );
-        }
     }
 }

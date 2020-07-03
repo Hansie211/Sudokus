@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -155,13 +156,13 @@ namespace Sudokus.Models {
             int emptyCellCount = 0;
             switch ( difficulty ) {
                 case Difficulty.Easy:
-                    emptyCellCount = random.Next(30, 40 + 1);
+                    emptyCellCount = random.Next( 30, 40 + 1 );
                     break;
                 case Difficulty.Medium:
-                    emptyCellCount = random.Next(40, 45 + 1 );
+                    emptyCellCount = random.Next( 40, 45 + 1 );
                     break;
                 case Difficulty.Hard:
-                    emptyCellCount = random.Next(45, 55 + 1 );
+                    emptyCellCount = random.Next( 45, 55 + 1 );
                     break;
             }
 

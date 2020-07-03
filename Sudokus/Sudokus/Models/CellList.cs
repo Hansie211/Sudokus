@@ -27,6 +27,13 @@ namespace Sudokus.Models {
             InitCells();
         }
 
+        protected abstract void InitCells();
+
+        public bool Contains( int num ) {
+
+            return Cells.Any( o => o.Value == num );
+        }
+
         public IEnumerator<CellModel> GetEnumerator() {
 
             return Cells.GetEnumerator();
@@ -37,12 +44,6 @@ namespace Sudokus.Models {
             return GetEnumerator();
         }
 
-        public bool Contains( int num ) {
-
-            return Cells.Any( o => o.Value == num );
-        }
-
-        protected abstract void InitCells();
     }
 
     public class Column : CellList {

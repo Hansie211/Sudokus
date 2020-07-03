@@ -8,6 +8,7 @@ namespace Sudokus.Extensions {
     public static class BindingExtensions {
 
         public static Binding GetBinding( this BindableObject self, BindableProperty property ) {
+
             var methodInfo = typeof(BindableObject).GetTypeInfo().GetDeclaredMethod("GetContext");
             var context = methodInfo?.Invoke(self, new[] { property });
 
@@ -16,6 +17,7 @@ namespace Sudokus.Extensions {
         }
 
         public static object GetBindingExpression( this Binding self ) {
+
             var fieldInfo = self?.GetType().GetTypeInfo().GetDeclaredField("_expression");
             return fieldInfo?.GetValue( self );
         }

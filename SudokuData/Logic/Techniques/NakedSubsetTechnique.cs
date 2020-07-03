@@ -13,7 +13,7 @@ namespace SudokuData.Logic.Techniques {
 
         private void RemovePair( Cell A, Cell B, BoardStructure structure ) {
 
-            IEnumerable<int> pairValues = A.Notes;
+            IEnumerable<byte> pairValues = A.Notes;
 
             foreach ( var cell in structure.Cells ) {
 
@@ -49,12 +49,12 @@ namespace SudokuData.Logic.Techniques {
                 }
 
 
-                for ( int i = 0 + 1; i < ( Sudoku.BOARDSIZE + 1 ) - 1; i++ ) {
+                for ( byte i = 0 + 1; i < ( Sudoku.BOARDSIZE + 1 ) - 1; i++ ) {
 
                     int count = 0;
                     Cell A = null, B = null;
 
-                    for ( int j = i + 1; j < Sudoku.BOARDSIZE + 1; j++ ) {
+                    for ( byte j = (byte)(i + 1); j < Sudoku.BOARDSIZE + 1; j++ ) {
 
                         if ( !cell.Notes.Contains( i ) || !cell.Notes.Contains( j ) ) {
                             continue;

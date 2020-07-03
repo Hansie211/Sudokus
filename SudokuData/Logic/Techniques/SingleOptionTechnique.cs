@@ -13,7 +13,7 @@ namespace SudokuData.Logic.Techniques {
 
         private void ScanSingleOptions( BoardStructure structure ) {
 
-            for ( int num = 0 + 1; num < Sudoku.BOARDSIZE + 1; num++ ) {
+            for ( byte num = 0 + 1; num < Sudoku.BOARDSIZE + 1; num++ ) {
 
                 Cell possible = null;
 

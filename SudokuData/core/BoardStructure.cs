@@ -89,13 +89,13 @@ namespace SudokuData.Core {
 
         protected override void InitCells() {
 
-            int squareX = Index % 3;
-            int squareY = Index / 3;
+            int squareX = Index % Sudoku.SQUARESIZE;
+            int squareY = Index / Sudoku.SQUARESIZE;
 
             for ( int i = 0; i < Sudoku.BOARDSIZE; i++ ) {
 
-                int cellX = i % 3 + squareX * 3;
-                int cellY = i / 3 + squareY * 3;
+                int cellX = i % 3 + squareX * Sudoku.SQUARESIZE;
+                int cellY = i / 3 + squareY * Sudoku.SQUARESIZE;
 
                 Cells[ i ] = Sudoku[ cellX, cellY ];
                 Cells[ i ].Square = this;

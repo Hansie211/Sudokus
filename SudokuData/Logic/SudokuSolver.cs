@@ -38,7 +38,10 @@ namespace SudokuData.Logic {
                         solver.Data[ x, y ].Notes.Add( solver.Data[ x, y ] );
                     } else {
 
-                        solver.Data[ x, y ].Notes.AddRange( DefaultOptions );
+                        foreach ( var note in DefaultOptions ) {
+
+                            solver.Data[ x, y ].Notes.Add( (byte)note );
+                        }
                     }
                 }
             }
@@ -76,14 +79,13 @@ namespace SudokuData.Logic {
                         continue;
                     }
 
-                    IEnumerable<int> optionsList = Data[x,y].Notes;
+                    IEnumerable<byte> optionsList = Data[x,y].Notes;
                     if ( optionsList.Count() != 1 ) {
 
                         continue;
                     }
 
-                    int value           = optionsList.First();
-                    Data[ x, y ].Value  = value;
+                    Data[ x, y ].Value  = optionsList.First();
 
                     result = true;
                 }

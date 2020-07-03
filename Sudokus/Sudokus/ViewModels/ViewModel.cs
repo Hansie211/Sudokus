@@ -55,11 +55,6 @@ namespace Sudokus.ViewModels {
             return (Page)Activator.CreateInstance( pageType, args );
         }
 
-        //protected virtual Page CreatePageInstance( Type pageType ) {
-
-        //    return CreatePageInstance( pageType );
-        //}
-
         protected static NavigationPage CreatePage( Type pageType, params object[] args ) {
 
             Type VMType     = GetViewModelType(pageType);

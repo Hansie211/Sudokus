@@ -44,6 +44,12 @@ namespace Sudokus.Models {
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public CellModel( Cell solutionCell ) {
+
+            Notes           = new BindingList<int>();
+            SolutionCell    = solutionCell;
+        }
+
         public void RaisePropertyChanged( string propName ) {
 
             PropertyChanged?.Invoke( this, new PropertyChangedEventArgs( propName ) );
@@ -57,12 +63,6 @@ namespace Sudokus.Models {
 
             prop = value;
             RaisePropertyChanged( propName );
-        }
-
-        public CellModel( Cell solutionCell ) {
-
-            Notes           = new BindingList<int>();
-            SolutionCell    = solutionCell;
         }
 
         public void Reset( int value ) {

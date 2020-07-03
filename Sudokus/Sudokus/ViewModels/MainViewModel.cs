@@ -51,6 +51,12 @@ namespace Sudokus.ViewModels {
             set {  SetProperty( ref _ErrorCount, value); }
         }
 
+        private int _HintCount = 0;
+        public int HintCount {
+            get => _HintCount;
+            set { SetProperty( ref _HintCount, value ); }
+        }
+
         public ICommand ChangeSelectionCommand { get; }
         public ICommand CellTapCommand { get; }
         public ICommand ChangeNotesModeCommand { get; }
@@ -77,6 +83,14 @@ namespace Sudokus.ViewModels {
             ResetCommand            = new Command( OnReset );
 
             UndoCommand             = new Command( OnUndo );
+        }
+
+        private void ResetModel() {
+
+            ActiveSelection = 1;
+            Moves.Clear();
+            ErrorCount = 0;
+            HintCount  = 0;
         }
 
         private void OnChangeSelection( object parameter ) {
@@ -150,8 +164,7 @@ namespace Sudokus.ViewModels {
             }
 
             Sudoku.GenerateRandom( (Difficulty)EnumConverter.ConvertBack( result, typeof( Difficulty ) ) );
-            ActiveSelection = 1;
-            Moves.Clear();
+            ResetModel();
         }
 
         private void OnHint( object parameter ) {
@@ -162,7 +175,9 @@ namespace Sudokus.ViewModels {
                     continue;
                 }
 
+                Moves.Add( new CellMove( cell ) );
                 cell.Value = cell.SolutionCell.Value;
+                HintCount++;
 
                 Validate();
 
@@ -231,8 +246,7 @@ namespace Sudokus.ViewModels {
                 cell.Reset( 0 );
             }
 
-            ActiveSelection = 1;
-            Moves.Clear();
+            ResetModel();
         }
 
         private void OnUndo() {

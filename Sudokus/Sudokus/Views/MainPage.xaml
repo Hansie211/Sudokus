@@ -22,7 +22,6 @@
 
         <converters:CellValueConverter x:Key="CellValueConverter" />
         <converters:CellNoteConverter x:Key="CellNoteConverter" />
-        <converters:IsSelectedConverter x:Key="IsSelectedConverter" />
         <converters:EnumConverter x:Key="EnumConverter" />
 
 
@@ -537,16 +536,19 @@
 
                 <Button Text="Next" Command="{Binding GenerateCommand}" />
                 <Button Text="Hint" Command="{Binding HintCommand}"/>
-                <Button Text="Fill Notes" Command="{Binding FillNotesCommand}" />
+                <Button Text="Fill Notes" Command="{Binding FillNotesCommand}" WidthRequest="100" />
                 <Button Text="Reset" Command="{Binding ResetCommand}" />
             </StackLayout>
 
             <Grid HorizontalOptions="FillAndExpand" Margin="5,0,5,0">
-                <Label Text="{Binding ErrorCount, StringFormat='Faults: {0}'}" VerticalTextAlignment="Center" FontSize="Large" Margin="0,0,10,0" HorizontalOptions="Start" VerticalOptions="FillAndExpand" />
+                <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand" HorizontalOptions="Start">
+                    <Label Text="{Binding ErrorCount, StringFormat='Mistakes: {0}'}" VerticalTextAlignment="Center" FontSize="Large" Margin="0,0,10,0" VerticalOptions="FillAndExpand" />
+                    <Label Text="{Binding HintCount, StringFormat='Hints: {0}'}" VerticalTextAlignment="Center" FontSize="Large" Margin="0,0,10,0" VerticalOptions="FillAndExpand" />
+                </StackLayout>
                 <Button Text="Undo" Command="{Binding UndoCommand}" HorizontalOptions="End" />
             </Grid>
             
-            <StackLayout Orientation="Horizontal">
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
                 <Frame Style="{StaticResource SelectionFrame}" >
                     <components:SelectionLabel Value="0" Style="{StaticResource SelectionText}" TapCommand="{Binding ChangeSelectionCommand}">
                         <Label.Triggers>
