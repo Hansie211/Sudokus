@@ -20,7 +20,7 @@ namespace SudokuData.Logic.Techniques {
                     continue;
                 }
 
-                foreach ( int option in cell.Notes.ToArray() ) {
+                foreach ( var option in cell.Notes.ToArray() ) {
 
                     foreach ( var structure in cell.Structures ) {
 

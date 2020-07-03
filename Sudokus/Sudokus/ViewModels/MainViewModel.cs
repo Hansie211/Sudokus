@@ -9,12 +9,15 @@ using System.Text;
 using System.Windows.Input;
 using Xamarin.Forms;
 using Sudokus.Converter;
+using System.Linq;
 
 namespace Sudokus.ViewModels {
 
-    public class MainViewModel : ViewModel {
+    public partial class MainViewModel : ViewModel {
 
         public SudokuModel Sudoku { get; }
+
+        private List<Move> Moves { get; }
 
         private int _ActiveSelection = 1;
         public int ActiveSelection {
@@ -42,6 +45,12 @@ namespace Sudokus.ViewModels {
             set { SetProperty( ref _Difficulty, value ); }
         }
 
+        private int _ErrorCount = 0;
+        public int ErrorCount {
+            get => _ErrorCount;
+            set {  SetProperty( ref _ErrorCount, value); }
+        }
+
         public ICommand ChangeSelectionCommand { get; }
         public ICommand CellTapCommand { get; }
         public ICommand ChangeNotesModeCommand { get; }
@@ -51,9 +60,12 @@ namespace Sudokus.ViewModels {
         public ICommand FillNotesCommand { get; }
         public ICommand ResetCommand { get; }
 
+        public ICommand UndoCommand { get; }
+
         public MainViewModel() {
 
             Sudoku = new SudokuModel();
+            Moves  = new List<Move>();
 
             ChangeSelectionCommand  = new Command( OnChangeSelection );
             CellTapCommand          = new Command( OnCellTap );
@@ -63,6 +75,8 @@ namespace Sudokus.ViewModels {
             HintCommand             = new Command( OnHint );
             FillNotesCommand        = new Command( OnFillNotes );
             ResetCommand            = new Command( OnReset );
+
+            UndoCommand             = new Command( OnUndo );
         }
 
         private void OnChangeSelection( object parameter ) {
@@ -83,7 +97,12 @@ namespace Sudokus.ViewModels {
                 return;
             }
 
+            Move move;
+
             if ( !NotesMode ) {
+                
+                move = new CellMove( cell );
+                Moves.Add( move );
 
                 if ( cell.Value == ActiveSelection ) {
 
@@ -91,10 +110,20 @@ namespace Sudokus.ViewModels {
                 } else {
 
                     cell.Value = ActiveSelection;
+
+                    if ( cell.IsError ) {
+
+                        ErrorCount++;
+                    }
                 }
+
+                Validate();
 
                 return;
             }
+
+            move = new NoteMove( cell );
+            Moves.Add( move );
 
             if ( ActiveSelection == 0 ) {
 
@@ -121,6 +150,8 @@ namespace Sudokus.ViewModels {
             }
 
             Sudoku.GenerateRandom( (Difficulty)EnumConverter.ConvertBack( result, typeof( Difficulty ) ) );
+            ActiveSelection = 1;
+            Moves.Clear();
         }
 
         private void OnHint( object parameter ) {
@@ -133,6 +164,8 @@ namespace Sudokus.ViewModels {
 
                 cell.Value = cell.SolutionCell.Value;
 
+                Validate();
+
                 return;
             }
         }
@@ -142,6 +175,7 @@ namespace Sudokus.ViewModels {
             for ( int num = 0 + 1; num < 9 + 1; num++ ) {
 
                 if ( cell.Square.Contains( num ) ) {
+
                     continue;
                 }
 
@@ -150,7 +184,7 @@ namespace Sudokus.ViewModels {
                     continue;
                 }
 
-                if ( cell.Square.Contains( num ) ) {
+                if ( cell.Column.Contains( num ) ) {
 
                     continue;
                 }
@@ -167,9 +201,16 @@ namespace Sudokus.ViewModels {
                     continue;
                 }
 
-                cell.Notes.Clear();
+                var cellNotes = GetNotesForCell( cell );
+                if ( cell.Notes.EqualRange( cellNotes ) ) {
 
-                foreach ( var note in GetNotesForCell( cell ) ) {
+                    continue;
+                }
+
+                Moves.Add( new NoteMove(cell) );
+
+                cell.Notes.Clear();
+                foreach ( var note in cellNotes ) {
 
                     cell.Notes.Add( note );
                 }
@@ -189,7 +230,48 @@ namespace Sudokus.ViewModels {
 
                 cell.Reset( 0 );
             }
+
+            ActiveSelection = 1;
+            Moves.Clear();
         }
 
+        private void OnUndo() {
+
+            if ( Moves.Count() == 0 ) {
+                return;
+            }
+
+            Move last = Moves.Last();
+
+            if ( last is CellMove ) {
+
+                if ( ((CellMove)last).Cell.IsError ) {
+                    ErrorCount--;
+                }
+            }
+            
+            last.Undo();
+
+            Moves.Remove( last );
+        }
+
+        private async void Validate() {
+
+            foreach( var cell in Sudoku.Cells ) {
+
+                if ( cell.IsConstant ) {
+
+                    continue;
+                }
+
+                if ( !cell.IsValid ) {
+
+                    return;
+                }
+            }
+
+            await Application.Current.MainPage.DisplayAlert("Solved!", "You have solved this sudoku!", "Generate next" );
+            OnGenerate( null );
+        }
     }
 }

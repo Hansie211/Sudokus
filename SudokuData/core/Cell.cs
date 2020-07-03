@@ -37,11 +37,6 @@ namespace SudokuData.Core {
             return cell.Value;
         }
 
-        public static int AsInt( Cell cell ) {
-
-            return (int)cell;
-        }
-
         public Cell Clone() {
 
             Cell result = new Cell( this.Value );

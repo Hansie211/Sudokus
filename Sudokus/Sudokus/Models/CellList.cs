@@ -45,8 +45,6 @@ namespace Sudokus.Models {
         protected abstract void InitCells();
     }
 
-
-
     public class Column : CellList {
 
         public Column( SudokuModel sudoku, int index ) : base( sudoku, index ) {
@@ -61,6 +59,7 @@ namespace Sudokus.Models {
             }
         }
     }
+
     public class Row : CellList {
 
         public Row( SudokuModel sudoku, int index ) : base( sudoku, index ) {
@@ -75,6 +74,7 @@ namespace Sudokus.Models {
             }
         }
     }
+
     public class Square : CellList {
 
         public Square( SudokuModel sudoku, int index ) : base( sudoku, index ) {

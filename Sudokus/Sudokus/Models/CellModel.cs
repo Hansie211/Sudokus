@@ -14,6 +14,7 @@ namespace Sudokus.Models {
 
         public bool HasValue { get => Value > 0; }
         public bool IsError { get => HasValue && SolutionCell.Value != Value; }
+        public bool IsValid { get => HasValue && SolutionCell.Value == Value; }
 
         private int _Value;
         public int Value { 

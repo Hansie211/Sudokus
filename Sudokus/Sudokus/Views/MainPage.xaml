@@ -76,15 +76,21 @@
 
         <Style TargetType="StackLayout" x:Key="BoardStack">
 
+            <Setter Property="Spacing" Value="1" />
         </Style>
 
         <Style TargetType="StackLayout" x:Key="RowStack">
 
+            <Setter Property="Spacing" Value="1" />
+        </Style>
+
+        <Style TargetType="StackLayout" x:Key="SquareRow">
+            <Setter Property="Spacing" Value="0" />
         </Style>
 
         <Style TargetType="StackLayout" x:Key="SquareRowStack">
 
-            <Setter Property="Spacing" Value="1" />
+            <Setter Property="Spacing" Value="0" />
         </Style>
 
         <Style TargetType="Frame" x:Key="SelectionFrame">
@@ -110,13 +116,13 @@
             <RowDefinition Height="200" />
         </Grid.RowDefinitions>
 
-        <Grid HorizontalOptions="Center" VerticalOptions="Start">
+        <Grid HorizontalOptions="Center" VerticalOptions="Start" BackgroundColor="Black" Margin="0,10,0,0">
 
             <StackLayout x:Name="SudokuBoard" Style="{StaticResource BoardStack}" BindingContext="{Binding Sudoku}">
 
                 <StackLayout Style="{StaticResource RowStack}" Orientation="Horizontal">
                     <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[0]}">
-                        <StackLayout>
+                        <StackLayout Style="{StaticResource SquareRow}">
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
@@ -160,7 +166,7 @@
                     </Frame>
 
                     <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[1]}">
-                        <StackLayout>
+                                                <StackLayout Style="{StaticResource SquareRow}">
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
@@ -204,7 +210,7 @@
                     </Frame>
 
                     <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[2]}">
-                        <StackLayout>
+                                                <StackLayout Style="{StaticResource SquareRow}">
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
@@ -250,7 +256,7 @@
 
                 <StackLayout Style="{StaticResource RowStack}" Orientation="Horizontal">
                     <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[3]}">
-                        <StackLayout>
+                                                <StackLayout Style="{StaticResource SquareRow}">
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
@@ -294,7 +300,7 @@
                     </Frame>
 
                     <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[4]}">
-                        <StackLayout>
+                                                <StackLayout Style="{StaticResource SquareRow}">
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
@@ -338,7 +344,7 @@
                     </Frame>
 
                     <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[5]}">
-                        <StackLayout>
+                                                <StackLayout Style="{StaticResource SquareRow}">
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
@@ -384,7 +390,7 @@
 
                 <StackLayout Style="{StaticResource RowStack}" Orientation="Horizontal">
                     <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[6]}">
-                        <StackLayout>
+                                                <StackLayout Style="{StaticResource SquareRow}">
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
@@ -428,7 +434,7 @@
                     </Frame>
 
                     <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[7]}">
-                        <StackLayout>
+                                                <StackLayout Style="{StaticResource SquareRow}">
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
@@ -472,7 +478,7 @@
                     </Frame>
 
                     <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[8]}">
-                        <StackLayout>
+                        <StackLayout Style="{StaticResource SquareRow}">
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
@@ -527,7 +533,7 @@
                 <components:TapLabel TapCommand="{Binding ChangeNotesModeCommand}" Text="Notes" FontSize="Medium" VerticalOptions="Center" Padding="0" Margin="0" />
             </StackLayout>
 
-            <StackLayout Orientation="Horizontal">
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
 
                 <Button Text="Next" Command="{Binding GenerateCommand}" />
                 <Button Text="Hint" Command="{Binding HintCommand}"/>
@@ -535,6 +541,11 @@
                 <Button Text="Reset" Command="{Binding ResetCommand}" />
             </StackLayout>
 
+            <Grid HorizontalOptions="FillAndExpand" Margin="5,0,5,0">
+                <Label Text="{Binding ErrorCount, StringFormat='Faults: {0}'}" VerticalTextAlignment="Center" FontSize="Large" Margin="0,0,10,0" HorizontalOptions="Start" VerticalOptions="FillAndExpand" />
+                <Button Text="Undo" Command="{Binding UndoCommand}" HorizontalOptions="End" />
+            </Grid>
+            
             <StackLayout Orientation="Horizontal">
                 <Frame Style="{StaticResource SelectionFrame}" >
                     <components:SelectionLabel Value="0" Style="{StaticResource SelectionText}" TapCommand="{Binding ChangeSelectionCommand}">

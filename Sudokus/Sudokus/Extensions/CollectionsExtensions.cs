@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Sudokus.Extensions {
@@ -79,6 +80,25 @@ namespace Sudokus.Extensions {
                 list[ i ] = list[ j ];
                 list[ j ] = temp;
             }
+        }
+
+        public static bool EqualRange<T>( this IList<T> list, IEnumerable<T> range ) {
+
+            if ( list.Count() != range.Count() ) {
+                return false;
+            }
+
+            foreach( T entry in range ) {
+
+                if ( list.Contains(entry) ) {
+
+                    continue;
+                }
+
+                return false;
+            }
+
+            return true;
         }
     }
 }

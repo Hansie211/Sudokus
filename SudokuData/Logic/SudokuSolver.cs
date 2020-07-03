@@ -132,7 +132,7 @@ namespace SudokuData.Logic {
 
                 SudokuSolver fork = SudokuSolver.Clone( this );
 
-                // Fill the guess
+                // Set the guess
                 fork.Data[ position.X, position.Y ].Value = opt;
 
                 // Try to solve
@@ -140,6 +140,7 @@ namespace SudokuData.Logic {
 
                     return fork;
                 }
+
             }
 
             return null;

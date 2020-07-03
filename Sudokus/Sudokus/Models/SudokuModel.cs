@@ -95,7 +95,6 @@ namespace Sudokus.Models {
 
         private void ZeroCells() {
 
-
             foreach ( var cell in Cells ) {
 
                 int valueCopy = cell.Value;

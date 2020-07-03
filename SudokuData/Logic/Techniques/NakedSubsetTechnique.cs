@@ -15,28 +15,28 @@ namespace SudokuData.Logic.Techniques {
 
             IEnumerable<int> pairValues = A.Notes;
 
-            foreach( var cell in structure.Cells ) {
+            foreach ( var cell in structure.Cells ) {
 
                 if ( cell == A || cell == B ) {
                     continue;
                 }
 
-                foreach( var option in pairValues ) {
+                foreach ( var option in pairValues ) {
 
-                     cell .Notes.Remove( option );
+                    cell.Notes.Remove( option );
                 }
             }
 
-            foreach( Cell cell in new Cell[] { A, B } ) {
+            foreach ( Cell cell in new Cell[] { A, B } ) {
 
-                 cell .Notes.Clear();
-                 cell .Notes.AddRange( pairValues );
+                cell.Notes.Clear();
+                cell.Notes.AddRange( pairValues );
             }
         }
 
         private void ScanPairs( BoardStructure structure ) {
 
-            foreach( var cell in structure.Cells ) {
+            foreach ( var cell in structure.Cells ) {
 
                 if ( cell.HasValue ) {
 
@@ -49,14 +49,14 @@ namespace SudokuData.Logic.Techniques {
                 }
 
 
-                for( int i = 0 + 1; i < ( Sudoku.BOARDSIZE + 1 ) - 1; i++ ) {
+                for ( int i = 0 + 1; i < ( Sudoku.BOARDSIZE + 1 ) - 1; i++ ) {
 
                     int count = 0;
                     Cell A = null, B = null;
 
                     for ( int j = i + 1; j < Sudoku.BOARDSIZE + 1; j++ ) {
 
-                        if ( !cell.Notes.Contains(i) || !cell.Notes.Contains(j) ) {
+                        if ( !cell.Notes.Contains( i ) || !cell.Notes.Contains( j ) ) {
                             continue;
                         }
 
@@ -76,7 +76,7 @@ namespace SudokuData.Logic.Techniques {
 
                     if ( count == 2 ) {
 
-                        RemovePair( A, B, structure);
+                        RemovePair( A, B, structure );
                     }
                 }
             }
@@ -84,7 +84,7 @@ namespace SudokuData.Logic.Techniques {
 
         public override void ReduceOptions() {
 
-            for( int i = 0; i < Sudoku.BOARDSIZE; i++ ) {
+            for ( int i = 0; i < Sudoku.BOARDSIZE; i++ ) {
 
                 ScanPairs( Solver.Data.Rows[ i ] );
                 ScanPairs( Solver.Data.Columns[ i ] );
