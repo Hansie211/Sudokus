@@ -1,10 +1,10 @@
 ﻿using SudokuData;
-using SudokuData.core;
+using SudokuData.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sudokus.Logic.Techniques {
+namespace SudokuData.Logic.Techniques {
 
     public class NakedSubsetTechnique : Technique {
 
@@ -13,7 +13,7 @@ namespace Sudokus.Logic.Techniques {
 
         private void RemovePair( Cell A, Cell B, BoardStructure structure ) {
 
-            IEnumerable<int> pairValues = Solver.GetOptions(A);
+            IEnumerable<int> pairValues = A.Notes;
 
             foreach( var cell in structure.Cells ) {
 
@@ -23,14 +23,14 @@ namespace Sudokus.Logic.Techniques {
 
                 foreach( var option in pairValues ) {
 
-                    Solver.GetOptions( cell ).Remove( option );
+                     cell .Notes.Remove( option );
                 }
             }
 
             foreach( Cell cell in new Cell[] { A, B } ) {
 
-                Solver.GetOptions( cell ).Clear();
-                Solver.GetOptions( cell ).AddRange( pairValues );
+                 cell .Notes.Clear();
+                 cell .Notes.AddRange( pairValues );
             }
         }
 
@@ -43,8 +43,7 @@ namespace Sudokus.Logic.Techniques {
                     continue;
                 }
 
-                var cellOptions = Solver.Options[ cell.X, cell.Y ];
-                if ( cellOptions.Count != 2 ) {
+                if ( cell.Notes.Count != 2 ) {
 
                     continue;
                 }
@@ -57,7 +56,7 @@ namespace Sudokus.Logic.Techniques {
 
                     for ( int j = i + 1; j < Sudoku.BOARDSIZE + 1; j++ ) {
 
-                        if ( !cellOptions.Contains(i) || !cellOptions.Contains(j) ) {
+                        if ( !cell.Notes.Contains(i) || !cell.Notes.Contains(j) ) {
                             continue;
                         }
 

@@ -1,10 +1,10 @@
 ﻿using SudokuData;
-using SudokuData.core;
+using SudokuData.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sudokus.Logic.Techniques {
+namespace SudokuData.Logic.Techniques {
 
     public class SingleOptionTechnique : Technique {
 
@@ -23,11 +23,11 @@ namespace Sudokus.Logic.Techniques {
 
                 foreach ( var cell in structure.Cells ) {
 
-                    if ( cell.HasValue ) { 
+                    if ( cell.HasValue ) {
                         continue;
                     }
 
-                    if ( !Solver.GetOptions( cell ).Contains( num ) ) {
+                    if ( !cell.Notes.Contains( num ) ) {
 
                         continue;
                     }
@@ -44,8 +44,9 @@ namespace Sudokus.Logic.Techniques {
                 if ( possible == null ) {
                     continue;
                 }
-                Solver.GetOptions( possible ).Clear();
-                Solver.GetOptions( possible ).Add( num );
+
+                possible.Notes.Clear();
+                possible.Notes.Add( num );
             }
         }
 

@@ -12,12 +12,23 @@ namespace Sudokus.Converter {
 
         public object Convert( object value, Type targetType, object parameter, CultureInfo culture ) {
 
-            int v = ((CellModel)value).Value;
-            if ( v == 0 ) {
-                return string.Empty;
+            if ( value == null ) {
+                return "-1";
             }
 
-            return v.ToString();
+            try {
+
+                int v = (int)value;
+                if ( v == 0 ) {
+                    return string.Empty;
+                }
+
+                return v.ToString();
+
+            } catch {
+
+                throw;
+            }
         }
 
         public object ConvertBack( object value, Type targetType, object parameter, CultureInfo culture ) {

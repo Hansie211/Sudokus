@@ -1,44 +1,29 @@
 ﻿using SudokuData;
-using SudokuData.core;
-using Sudokus.Extensions;
-using Sudokus.Logic.Techniques;
+using SudokuData.Core;
+using SudokuData.Logic.Techniques;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Sudokus.Logic {
+namespace SudokuData.Logic {
 
     public class SudokuSolver {
 
-        private static readonly int[] DefaultOptions = new int[ Sudoku.BOARDSIZE ] { 1,2,3,4,5,6,7,8,9 };
+        private static readonly IEnumerable<int> DefaultOptions = Enumerable.Range(1, Sudoku.BOARDSIZE );
 
-        public List<int>[,] Options { get; private set; }
         public Sudoku Data { get; private set; }
         private IEnumerable<Technique> Techniques { get; }
 
-        private SudokuSolver( Sudoku data, List<int>[,] options ) : this( data ) {
-
-            for ( int x = 0; x < Sudoku.BOARDSIZE; x++ ) {
-                for ( int y = 0; y < Sudoku.BOARDSIZE; y++ ) {
-
-                    Options[ x, y ] = options[ x, y ].Clone();
-                }
-            }
-        }
-
         private SudokuSolver( Sudoku data ) {
 
-            Options = new List<int>[ Sudoku.BOARDSIZE, Sudoku.BOARDSIZE ];
-            Data    = data;
-
-            Techniques = Technique.GetTechniques( this );
+            Data        = data;
+            Techniques  = Technique.GetTechniques( this );
         }
 
         public static SudokuSolver Clone( SudokuSolver subject ) {
 
-            SudokuSolver solver = new SudokuSolver( subject.Data.Clone(), subject.Options );
-            return solver;
+            return new SudokuSolver( subject.Data.Clone() );
         }
 
         public static SudokuSolver Setup( Sudoku data ) {
@@ -50,10 +35,10 @@ namespace Sudokus.Logic {
 
                     if ( solver.Data[ x, y ].HasValue ) {
 
-                        solver.Options[ x, y ] = new List<int>( new int[] { solver.Data[ x, y ] } );
+                        solver.Data[ x, y ].Notes.Add( solver.Data[ x, y ] );
                     } else {
 
-                        solver.Options[ x, y ] = new List<int>( DefaultOptions );
+                        solver.Data[ x, y ].Notes.AddRange( DefaultOptions );
                     }
                 }
             }
@@ -70,8 +55,7 @@ namespace Sudokus.Logic {
                         continue;
                     }
 
-                    bool found = Options[ x, y ].Any();
-                    if ( !found ) {
+                    if ( !Data[ x, y ].Notes.Any() ) {
 
                         return true;
                     }
@@ -92,7 +76,7 @@ namespace Sudokus.Logic {
                         continue;
                     }
 
-                    IEnumerable<int> optionsList = Options[ x, y ];
+                    IEnumerable<int> optionsList = Data[x,y].Notes;
                     if ( optionsList.Count() != 1 ) {
 
                         continue;
@@ -120,7 +104,7 @@ namespace Sudokus.Logic {
                         continue;
                     }
 
-                    int count = Options[ x, y ].Count();
+                    int count = Data[ x, y ].Notes.Count();
                     if ( count < lowest ) {
 
                         lowest = count;
@@ -144,7 +128,7 @@ namespace Sudokus.Logic {
                 return null;
             }
 
-            foreach ( var opt in Options[ position.X, position.Y ] ) {
+            foreach ( var opt in Data[ position.X, position.Y ].Notes ) {
 
                 SudokuSolver fork = SudokuSolver.Clone( this );
 
@@ -164,9 +148,9 @@ namespace Sudokus.Logic {
         private int GetOptionsCount() {
 
             int result = 0;
-            foreach( var optionList in Options ) {
+            foreach ( var cell in Data ) {
 
-                result += optionList.Count();
+                result += cell.Notes.Count();
             }
 
             return result;
@@ -208,15 +192,9 @@ namespace Sudokus.Logic {
                 return false;
             }
 
-            this.Data       = solution.Data;
-            this.Options    = solution.Options;
+            this.Data = solution.Data;
 
             return true;
-        }
-
-        public List<int> GetOptions( Cell cell ) { 
-
-            return Options[ cell.X, cell.Y ];
         }
 
     }

@@ -6,6 +6,8 @@ namespace Sudokus.Extensions {
 
     public static class CollectionsExtensions {
 
+        private static readonly Random Random = new Random();
+
         public static int Count<T>( this ReadOnlySpan<T> span, T item ) {
 
             int count = 0;
@@ -65,6 +67,18 @@ namespace Sudokus.Extensions {
         public static List<T> Clone<T>( this List<T> list ) {
 
             return new List<T>( list );
+        }
+
+        public static void Shuffle<T>( this List<T> list ) {
+
+            for ( int i = 0; i < list.Count; i++ ) {
+
+                int j = Random.Next( 0, list.Count );
+
+                T temp = list[i];
+                list[ i ] = list[ j ];
+                list[ j ] = temp;
+            }
         }
     }
 }

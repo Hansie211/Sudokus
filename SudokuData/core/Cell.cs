@@ -16,6 +16,8 @@ namespace SudokuData.Core {
         public int X { get => Column.Index; }
         public int Y { get => Row.Index; }
 
+        public List<int> Notes { get; }
+
         public IEnumerable<BoardStructure> Structures {
             get {
                 yield return Row;
@@ -27,6 +29,7 @@ namespace SudokuData.Core {
         public Cell( int value ) {
 
             Value = value;
+            Notes = new List<int>( Sudoku.BOARDSIZE );
         }
 
         public static implicit operator int( Cell cell ) {
@@ -41,19 +44,13 @@ namespace SudokuData.Core {
 
         public Cell Clone() {
 
-            return new Cell( this.Value );
+            Cell result = new Cell( this.Value );
+            foreach( var note in Notes ) {
+
+                result.Notes.Add( note );
+            }
+
+            return result;
         }
-
-        //public static bool IsValueInSpan( ReadOnlySpan<Cell> span, int value ) {
-
-        //    foreach ( var cell in span ) {
-
-        //        if ( cell.Get() == value ) {
-        //            return true;
-        //        }
-        //    }
-
-        //    return false;
-        //}
     }
 }

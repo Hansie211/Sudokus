@@ -4,18 +4,57 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:Sudokus.Converter"
+             xmlns:components="clr-namespace:Sudokus.Components"
+             xmlns:vms="clr-namespace:Sudokus.ViewModels"
              mc:Ignorable="d"
              x:Class="Sudokus.Views.MainPage" NavigationPage.HasNavigationBar="False">
 
     <ContentPage.Resources>
 
+        <ResourceDictionary>
+            <OnPlatform x:TypeArguments="x:String" x:Key="RobotoMono">
+                <On Platform="Android" Value="RobotoMono-Regular.ttf#RobotoMono" />
+            </OnPlatform>
+            <OnPlatform x:TypeArguments="x:String" x:Key="RobotoMonoBold">
+                <On Platform="Android" Value="RobotoMono-Bold.ttf#RobotoMonoBold" />
+            </OnPlatform>
+        </ResourceDictionary>
+
         <converters:CellValueConverter x:Key="CellValueConverter" />
+        <converters:CellNoteConverter x:Key="CellNoteConverter" />
         <converters:IsSelectedConverter x:Key="IsSelectedConverter" />
+        <converters:EnumConverter x:Key="EnumConverter" />
+
 
         <Style TargetType="Label" x:Key="CellText">
             <Setter Property="HorizontalTextAlignment" Value="Center" />
             <Setter Property="VerticalTextAlignment" Value="Center" />
             <Setter Property="FontSize" Value="Large" />
+            <Setter Property="TextColor" Value="Black" />
+            <Setter Property="FontFamily" Value="{StaticResource RobotoMono}" />
+
+            <Style.Triggers>
+
+                <DataTrigger TargetType="Label" Binding="{Binding Path=HasValue}" Value="False">
+                    <Setter Property="FontSize" Value="Micro" />
+                    <Setter Property="TextColor" Value="DarkBlue"/>
+                </DataTrigger>
+
+                <DataTrigger TargetType="Label" Binding="{Binding Path=IsConstant}" Value="True">
+                    <Setter Property="FontFamily" Value="{StaticResource RobotoMonoBold}" />
+                </DataTrigger>
+                <DataTrigger TargetType="Label" Binding="{Binding Path=IsConstant}" Value="False">
+                    <Setter Property="FontFamily" Value="{StaticResource RobotoMono}" />
+                </DataTrigger>
+
+                <DataTrigger TargetType="Label" Binding="{Binding Path=IsError}" Value="True">
+                    <Setter Property="TextColor" Value="Red" />
+                </DataTrigger>
+                <DataTrigger TargetType="Label" Binding="{Binding Path=IsError}" Value="False">
+                    <Setter Property="TextColor" Value="Black" />
+                </DataTrigger>
+                
+            </Style.Triggers>
         </Style>
 
         <Style TargetType="Frame" x:Key="CellFrame">
@@ -38,7 +77,7 @@
         <Style TargetType="StackLayout" x:Key="BoardStack">
 
         </Style>
-        
+
         <Style TargetType="StackLayout" x:Key="RowStack">
 
         </Style>
@@ -68,140 +107,140 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="100" />
+            <RowDefinition Height="200" />
         </Grid.RowDefinitions>
 
-        <Grid HorizontalOptions="Center" VerticalOptions="Center">
+        <Grid HorizontalOptions="Center" VerticalOptions="Start">
 
-            <StackLayout Style="{StaticResource BoardStack}">
+            <StackLayout x:Name="SudokuBoard" Style="{StaticResource BoardStack}" BindingContext="{Binding Sudoku}">
 
                 <StackLayout Style="{StaticResource RowStack}" Orientation="Horizontal">
-                    <Frame Style="{StaticResource SquareFrame}">
+                    <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[0]}">
                         <StackLayout>
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[0], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel FontFamily="{StaticResource RobotoMono}" BindingContext="{Binding Cells[0]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[1], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[1]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[2], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-
-                            </StackLayout>
-                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
-
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[3], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[4], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[5], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[2]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
 
                             </StackLayout>
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[6], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[3]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[7], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[4]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[0].Cells[8], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[5]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[6]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[7]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[8]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
 
                             </StackLayout>
                         </StackLayout>
                     </Frame>
 
-                    <Frame Style="{StaticResource SquareFrame}">
+                    <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[1]}">
                         <StackLayout>
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[0], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[0]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[1], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[1]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[2], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-
-                            </StackLayout>
-                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
-
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[3], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[4], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[5], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[2]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
 
                             </StackLayout>
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[6], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[3]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[7], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[4]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[1].Cells[8], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[5]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[6]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[7]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[8]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
 
                             </StackLayout>
                         </StackLayout>
                     </Frame>
-                
-                    <Frame Style="{StaticResource SquareFrame}">
+
+                    <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[2]}">
                         <StackLayout>
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[0], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[0]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[1], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[1]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[2], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-
-                            </StackLayout>
-                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
-
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[3], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[4], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[5], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[2]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
 
                             </StackLayout>
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[6], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[3]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[7], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[4]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[2].Cells[8], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[5]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[6]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[7]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[8]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
 
                             </StackLayout>
@@ -210,132 +249,132 @@
                 </StackLayout>
 
                 <StackLayout Style="{StaticResource RowStack}" Orientation="Horizontal">
-                    <Frame Style="{StaticResource SquareFrame}">
+                    <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[3]}">
                         <StackLayout>
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[0], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[0]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[1], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[1]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[2], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-
-                            </StackLayout>
-                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
-
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[3], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[4], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[5], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[2]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
 
                             </StackLayout>
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[6], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[3]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[7], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[4]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[3].Cells[8], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[5]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[6]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[7]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[8]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
 
                             </StackLayout>
                         </StackLayout>
                     </Frame>
 
-                    <Frame Style="{StaticResource SquareFrame}">
+                    <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[4]}">
                         <StackLayout>
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[0], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[0]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[1], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[1]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[2], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-
-                            </StackLayout>
-                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
-
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[3], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[4], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[5], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[2]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
 
                             </StackLayout>
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[6], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[3]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[7], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[4]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[4].Cells[8], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[5]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[6]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[7]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[8]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
 
                             </StackLayout>
                         </StackLayout>
                     </Frame>
 
-                    <Frame Style="{StaticResource SquareFrame}">
+                    <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[5]}">
                         <StackLayout>
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[0], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[0]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[1], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[1]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[2], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-
-                            </StackLayout>
-                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
-
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[3], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[4], Converter={StaticResource CellValueConverter}}" />
-                                </Frame>
-                                <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[5], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[2]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
 
                             </StackLayout>
                             <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[6], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[3]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[7], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[4]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
                                 <Frame Style="{StaticResource CellFrame}">
-                                    <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[5].Cells[8], Converter={StaticResource CellValueConverter}}" />
+                                    <components:CellLabel BindingContext="{Binding Cells[5]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[6]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[7]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[8]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
                                 </Frame>
 
                             </StackLayout>
@@ -344,263 +383,262 @@
                 </StackLayout>
 
                 <StackLayout Style="{StaticResource RowStack}" Orientation="Horizontal">
-                        <Frame Style="{StaticResource SquareFrame}">
-                            <StackLayout>
-                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+                    <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[6]}">
+                        <StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[0], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[1], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[2], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[0]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[1]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[2]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
 
-                                </StackLayout>
-                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
-
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[3], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[4], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[5], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-
-                                </StackLayout>
-                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
-
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[6], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[7], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[6].Cells[8], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-
-                                </StackLayout>
                             </StackLayout>
-                        </Frame>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
-                        <Frame Style="{StaticResource SquareFrame}">
-                            <StackLayout>
-                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[3]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[4]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[5]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
 
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[0], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[1], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[2], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-
-                                </StackLayout>
-                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
-
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[3], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[4], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[5], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-
-                                </StackLayout>
-                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
-
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[6], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[7], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[7].Cells[8], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-
-                                </StackLayout>
                             </StackLayout>
-                        </Frame>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
 
-                        <Frame Style="{StaticResource SquareFrame}">
-                            <StackLayout>
-                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[6]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[7]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[8]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
 
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[0], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[1], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[2], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-
-                                </StackLayout>
-                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
-
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[3], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[4], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[5], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-
-                                </StackLayout>
-                                <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
-
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[6], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[7], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-                                    <Frame Style="{StaticResource CellFrame}">
-                                        <Label Style="{StaticResource CellText}" Text="{Binding Sudoku.Squares[8].Cells[8], Converter={StaticResource CellValueConverter}}" />
-                                    </Frame>
-
-                                </StackLayout>
                             </StackLayout>
-                        </Frame>
-                    </StackLayout>
+                        </StackLayout>
+                    </Frame>
+
+                    <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[7]}">
+                        <StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[0]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[1]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[2]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[3]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[4]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[5]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[6]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[7]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[8]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
+
+                    <Frame Style="{StaticResource SquareFrame}" BindingContext="{Binding Squares[8]}">
+                        <StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[0]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[1]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[2]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[3]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[4]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[5]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Style="{StaticResource SquareRowStack}">
+
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[6]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[7]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+                                <Frame Style="{StaticResource CellFrame}">
+                                    <components:CellLabel BindingContext="{Binding Cells[8]}" HasValue="{Binding Path=HasValue}" TapCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CellTapCommand}" TapCommandParameter="{Binding .}" Style="{StaticResource CellText}" NoteText="{Binding Path=Notes, Converter={StaticResource CellNoteConverter}}" ValueText="{Binding Path=Value, Converter={StaticResource CellValueConverter}}" />
+                                </Frame>
+
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
+                </StackLayout>
 
             </StackLayout>
 
         </Grid>
 
-        <StackLayout Orientation="Horizontal" Grid.Row="1" HorizontalOptions="Center">
-            <Frame Style="{StaticResource SelectionFrame}">
-                <Label Style="{StaticResource SelectionText}">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="1" />
-                    </Label.GestureRecognizers>
-                    <Label.Triggers>
-                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="1">
-                            <Setter Property="FontAttributes" Value="Bold" />
-                        </DataTrigger>
-                    </Label.Triggers>
-                    1
-                    </Label>
-            </Frame>
-            <Frame Style="{StaticResource SelectionFrame}">
-                <Label Style="{StaticResource SelectionText}">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="2"  />
-                    </Label.GestureRecognizers>
-                    <Label.Triggers>
-                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="2">
-                            <Setter Property="FontAttributes" Value="Bold" />
-                        </DataTrigger>
-                    </Label.Triggers>
-                    2
-                </Label>
-            </Frame>
-            <Frame Style="{StaticResource SelectionFrame}">
-                <Label Style="{StaticResource SelectionText}">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="3"/>
-                    </Label.GestureRecognizers>
-                    <Label.Triggers>
-                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="3">
-                            <Setter Property="FontAttributes" Value="Bold" />
-                        </DataTrigger>
-                    </Label.Triggers>
-                    3
-                </Label>
-            </Frame>
-            <Frame Style="{StaticResource SelectionFrame}">
-                <Label Style="{StaticResource SelectionText}">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="4"/>
-                    </Label.GestureRecognizers>
-                    <Label.Triggers>
-                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="4">
-                            <Setter Property="FontAttributes" Value="Bold" />
-                        </DataTrigger>
-                    </Label.Triggers>
-                    4
-                </Label>
-            </Frame>
-            <Frame Style="{StaticResource SelectionFrame}">
-                <Label Style="{StaticResource SelectionText}">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="5"/>
-                    </Label.GestureRecognizers>
-                    <Label.Triggers>
-                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="5">
-                            <Setter Property="FontAttributes" Value="Bold" />
-                        </DataTrigger>
-                    </Label.Triggers>
-                    5
-                </Label>
-            </Frame>
-            <Frame Style="{StaticResource SelectionFrame}">
-                <Label Style="{StaticResource SelectionText}">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="6"/>
-                    </Label.GestureRecognizers>
-                    <Label.Triggers>
-                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="6">
-                            <Setter Property="FontAttributes" Value="Bold" />
-                        </DataTrigger>
-                    </Label.Triggers>
-                    6
-                </Label>
-            </Frame>
-            <Frame Style="{StaticResource SelectionFrame}">
-                <Label Style="{StaticResource SelectionText}">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="7"/>
-                    </Label.GestureRecognizers>
-                    <Label.Triggers>
-                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="7">
-                            <Setter Property="FontAttributes" Value="Bold" />
-                        </DataTrigger>
-                    </Label.Triggers>
-                    7
-                </Label>
-            </Frame>
-            <Frame Style="{StaticResource SelectionFrame}">
-                <Label Style="{StaticResource SelectionText}">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="8"/>
-                    </Label.GestureRecognizers>
-                    <Label.Triggers>
-                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="8">
-                            <Setter Property="FontAttributes" Value="Bold" />
-                        </DataTrigger>
-                    </Label.Triggers>
-                    8
-                </Label>
-            </Frame>
-            <Frame Style="{StaticResource SelectionFrame}">
-                <Label Style="{StaticResource SelectionText}">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OnChangeSelection}" CommandParameter="9"/>
-                    </Label.GestureRecognizers>
-                    <Label.Triggers>
-                        <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="9">
-                            <Setter Property="FontAttributes" Value="Bold" />
-                        </DataTrigger>
-                    </Label.Triggers>
-                    9
-                </Label>
-            </Frame>
+        <StackLayout Grid.Row="1" HorizontalOptions="Center">
+
+            <StackLayout Orientation="Horizontal" Spacing="0">
+                <CheckBox IsChecked="{Binding NotesMode}" VerticalOptions="Center" Margin="0" />
+                <components:TapLabel TapCommand="{Binding ChangeNotesModeCommand}" Text="Notes" FontSize="Medium" VerticalOptions="Center" Padding="0" Margin="0" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+
+                <Button Text="Next" Command="{Binding GenerateCommand}" />
+                <Button Text="Hint" Command="{Binding HintCommand}"/>
+                <Button Text="Fill Notes" Command="{Binding FillNotesCommand}" />
+                <Button Text="Reset" Command="{Binding ResetCommand}" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Frame Style="{StaticResource SelectionFrame}" >
+                    <components:SelectionLabel Value="0" Style="{StaticResource SelectionText}" TapCommand="{Binding ChangeSelectionCommand}">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="0">
+                                <Setter Property="FontAttributes" Value="Bold" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                        -
+                    </components:SelectionLabel>
+                </Frame>
+                <Frame Style="{StaticResource SelectionFrame}" >
+                    <components:SelectionLabel Value="1" Style="{StaticResource SelectionText}" TapCommand="{Binding ChangeSelectionCommand}">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="1">
+                                <Setter Property="FontAttributes" Value="Bold" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                        1
+                    </components:SelectionLabel>
+                </Frame>
+                <Frame Style="{StaticResource SelectionFrame}">
+                    <components:SelectionLabel Value="2" Style="{StaticResource SelectionText}" TapCommand="{Binding ChangeSelectionCommand}">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="2">
+                                <Setter Property="FontAttributes" Value="Bold" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                        2
+                    </components:SelectionLabel>
+                </Frame>
+                <Frame Style="{StaticResource SelectionFrame}">
+                    <components:SelectionLabel Value="3" Style="{StaticResource SelectionText}" TapCommand="{Binding ChangeSelectionCommand}">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="3">
+                                <Setter Property="FontAttributes" Value="Bold" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                        3
+                    </components:SelectionLabel>
+                </Frame>
+                <Frame Style="{StaticResource SelectionFrame}">
+                    <components:SelectionLabel Value="4" Style="{StaticResource SelectionText}" TapCommand="{Binding ChangeSelectionCommand}">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="4">
+                                <Setter Property="FontAttributes" Value="Bold" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                        4
+                    </components:SelectionLabel>
+                </Frame>
+                <Frame Style="{StaticResource SelectionFrame}">
+                    <components:SelectionLabel Value="5" Style="{StaticResource SelectionText}" TapCommand="{Binding ChangeSelectionCommand}">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="5">
+                                <Setter Property="FontAttributes" Value="Bold" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                        5
+                    </components:SelectionLabel>
+                </Frame>
+                <Frame Style="{StaticResource SelectionFrame}">
+                    <components:SelectionLabel Value="6" Style="{StaticResource SelectionText}" TapCommand="{Binding ChangeSelectionCommand}">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="6">
+                                <Setter Property="FontAttributes" Value="Bold" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                        6
+                    </components:SelectionLabel>
+                </Frame>
+                <Frame Style="{StaticResource SelectionFrame}">
+                    <components:SelectionLabel Value="7" Style="{StaticResource SelectionText}" TapCommand="{Binding ChangeSelectionCommand}">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="7">
+                                <Setter Property="FontAttributes" Value="Bold" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                        7
+                    </components:SelectionLabel>
+                </Frame>
+                <Frame Style="{StaticResource SelectionFrame}">
+                    <components:SelectionLabel Value="8" Style="{StaticResource SelectionText}" TapCommand="{Binding ChangeSelectionCommand}">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="8">
+                                <Setter Property="FontAttributes" Value="Bold" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                        8
+                    </components:SelectionLabel>
+                </Frame>
+                <Frame Style="{StaticResource SelectionFrame}">
+                    <components:SelectionLabel Value="9" Style="{StaticResource SelectionText}" TapCommand="{Binding ChangeSelectionCommand}">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding Path=ActiveSelection}" Value="9">
+                                <Setter Property="FontAttributes" Value="Bold" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                        9
+                    </components:SelectionLabel>
+                </Frame>
+            </StackLayout>
         </StackLayout>
-        
+
     </Grid>
-    
+
 </ContentPage>

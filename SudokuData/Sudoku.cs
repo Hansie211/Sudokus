@@ -17,8 +17,6 @@ namespace SudokuData {
         public Column[] Columns { get; }
         public Square[] Squares { get; }
 
-        public int Lol { get; } = 9;
-
         public Cell this[ int x, int y ] {
 
             get => Data[ x, y ];
@@ -36,16 +34,6 @@ namespace SudokuData {
             Rows    = new Row[ BOARDSIZE ];
             Columns = new Column[ BOARDSIZE ];
             Squares = new Square[ BOARDSIZE ];
-        }
-
-        private void InitStructures() {
-
-            for ( int i = 0; i < BOARDSIZE; i++ ) {
-
-                Rows[ i ]    = new Row( this, i );
-                Columns[ i ] = new Column( this, i );
-                Squares[ i ] = new Square( this, i );
-            }
         }
 
         public Sudoku( RawSudoku rawData ) : this() {
@@ -91,37 +79,14 @@ namespace SudokuData {
             return result;
         }
 
-        public static Sudoku GenerateRandom() {
+        private void InitStructures() {
 
-            Sudoku result = GenerateEmpty();
+            for ( int i = 0; i < BOARDSIZE; i++ ) {
 
-            Random random = new Random();
-            Action<Square> FillRandom = ( square ) => {
-
-                List<int> values = new List<int>( Enumerable.Range( 1, BOARDSIZE ) );
-
-                // Shuffle
-                for( int i = 0; i < values.Count; i++ ){
-
-                    int j = random.Next( 0, values.Count );
-
-                    int temp = values[i];
-                    values[i] = values[j];
-                    values[j] = temp;
-                }
-
-                // Fill
-                for( int i = 0; i < square.Cells.Length; i++ ){
-
-                    square.Cells[i].Value = values[i];
-                }
-            };
-
-            FillRandom( result.Squares[ 0 ] );
-            FillRandom( result.Squares[ 4 ] );
-            FillRandom( result.Squares[ 8 ] );
-
-            return result;
+                Rows[ i ]    = new Row( this, i );
+                Columns[ i ] = new Column( this, i );
+                Squares[ i ] = new Square( this, i );
+            }
         }
 
         public Sudoku Clone() {
@@ -149,12 +114,53 @@ namespace SudokuData {
             return true;
         }
 
+        public void ResetZero() {
+
+            for ( int x = 0; x < Data.GetLength( 0 ); x++ ) {
+                for ( int y = 0; y < Data.GetLength( 1 ); y++ ) {
+
+                    Data[ x, y ].Value = 0;
+               }
+            }
+        }
+
+        public void GenerateRandom() {
+
+            ResetZero();
+
+            Random random = new Random();
+            Action<Square> FillRandom = ( square ) => {
+
+                List<int> values = new List<int>( Enumerable.Range( 1, BOARDSIZE ) );
+
+                // Shuffle
+                for( int i = 0; i < values.Count; i++ ){
+
+                    int j = random.Next( 0, values.Count );
+
+                    int temp = values[i];
+                    values[i] = values[j];
+                    values[j] = temp;
+                }
+
+                // Fill
+                for( int i = 0; i < square.Cells.Length; i++ ){
+
+                    square.Cells[i].Value = values[i];
+                }
+            };
+
+            FillRandom( Squares[ 0 ] );
+            FillRandom( Squares[ 4 ] );
+            FillRandom( Squares[ 8 ] );
+        }
+
         public IEnumerator<Cell> GetEnumerator() {
 
             foreach( var cell in Data ) {
+
                 yield return cell;
             }
-
         }
 
         IEnumerator IEnumerable.GetEnumerator() {

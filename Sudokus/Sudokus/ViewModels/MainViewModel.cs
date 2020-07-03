@@ -1,6 +1,6 @@
 ﻿using SudokuData;
-using Sudokus.Logic;
 using Sudokus.Models;
+using Sudokus.Extensions;
 using Sudokus.Properties;
 using System;
 using System.Collections.Generic;
@@ -8,99 +8,188 @@ using System.Diagnostics;
 using System.Text;
 using System.Windows.Input;
 using Xamarin.Forms;
+using Sudokus.Converter;
 
 namespace Sudokus.ViewModels {
 
     public class MainViewModel : ViewModel {
 
         public SudokuModel Sudoku { get; }
+
         private int _ActiveSelection = 1;
-        public int ActiveSelection { 
+        public int ActiveSelection {
             get => _ActiveSelection;
-            set { 
-                SetProperty( ref _ActiveSelection, value ); 
+            set {
+                SetProperty( ref _ActiveSelection, value );
             }
         }
 
-        public ICommand OnChangeSelection { get; }
+        private bool _NotesMode = false;
+        public bool NotesMode {
+            get => _NotesMode;
+            set {
+                SetProperty( ref _NotesMode, value );
+            }
+        }
 
-        #region outcommented
-        //static readonly RawSudoku[] RawSudokus = new RawSudoku[50];
+        public IEnumerable<string> Difficulties {
+            get => new string[] { "Easy", "Medium", "Hard" };
+        }
 
-        //static MainViewModel() {
+        private Difficulty _Difficulty = Difficulty.Easy;
+        public Difficulty Difficulty {
+            get => _Difficulty;
+            set { SetProperty( ref _Difficulty, value ); }
+        }
 
-        //    string[] textData = Resources.sudokus.Split( '\n' );
+        public ICommand ChangeSelectionCommand { get; }
+        public ICommand CellTapCommand { get; }
+        public ICommand ChangeNotesModeCommand { get; }
 
-        //    for ( int i = 0; i < RawSudokus.Length; i++ ) {
-        //        RawSudokus[ i ] = new RawSudoku( Sudoku.BOARDSIZE );
-        //    }
-
-        //    int index = 0;
-        //    for ( int i = 1; i < textData.Length; i++ ) {
-
-        //        if ( i % 10 == 0 ) {
-
-        //            index++;
-        //            continue;
-        //        }
-
-        //        int y = (i % 10) - 1;
-
-        //        for ( int x = 0; x < 9; x++ ) {
-
-        //            char c  = textData[i][x];
-        //            int v   = int.Parse( c.ToString() );
-
-        //            RawSudokus[ index ][ x, y ] = v;
-        //        }
-        //    }
-        //}
-
-        //public void TestMethod1() {
-
-        //    int count = 0;
-
-        //    for ( int i = 0; i < RawSudokus.Length; i++ ) {
-
-        //        try {
-        //            Sudoku data = new Sudoku( RawSudokus[i] );
-        //            SudokuSolver solver = SudokuSolver.Setup( data );
-
-        //            try {
-
-        //                bool x = solver.Solve( false );
-        //                if ( !x ) {
-        //                    count++;
-        //                }
-
-        //            } catch ( Exception exp ) {
-
-        //                string s = exp.ToString();
-        //                Console.WriteLine( s );
-        //                throw;
-        //            }
-
-        //        } catch ( Exception exp ) {
-
-        //            string s = exp.ToString();
-        //            Console.WriteLine( s );
-        //            throw;
-        //        }
-        //    }
-
-        //    Debug.Assert( count == 0, $"Count should be '0', but is { count }." );
-        //}
-        #endregion
+        public ICommand GenerateCommand { get; }
+        public ICommand HintCommand { get; }
+        public ICommand FillNotesCommand { get; }
+        public ICommand ResetCommand { get; }
 
         public MainViewModel() {
 
             Sudoku = new SudokuModel();
-            OnChangeSelection = new Command( ChangeSelection );
+
+            ChangeSelectionCommand  = new Command( OnChangeSelection );
+            CellTapCommand          = new Command( OnCellTap );
+            ChangeNotesModeCommand  = new Command( OnChangeNotesMode );
+
+            GenerateCommand         = new Command( OnGenerate );
+            HintCommand             = new Command( OnHint );
+            FillNotesCommand        = new Command( OnFillNotes );
+            ResetCommand            = new Command( OnReset );
         }
 
-        private void ChangeSelection( object parameter ) {
+        private void OnChangeSelection( object parameter ) {
 
-            ActiveSelection = int.Parse((string)parameter);
+            ActiveSelection = (int)parameter;
         }
+
+        private void OnChangeNotesMode( object parameter ) {
+
+            NotesMode = !NotesMode;
+        }
+
+        private void OnCellTap( object parameter ) {
+
+            CellModel cell = (CellModel)parameter;
+
+            if ( cell.IsConstant ) {
+                return;
+            }
+
+            if ( !NotesMode ) {
+
+                if ( cell.Value == ActiveSelection ) {
+
+                    cell.Value = 0;
+                } else {
+
+                    cell.Value = ActiveSelection;
+                }
+
+                return;
+            }
+
+            if ( ActiveSelection == 0 ) {
+
+                cell.Notes.Clear();
+            } else {
+
+                if ( cell.Notes.Contains( ActiveSelection ) ) {
+
+                    cell.Notes.Remove( ActiveSelection );
+                } else {
+
+                    cell.Notes.Add( ActiveSelection );
+                }
+            }
+
+            cell.RaisePropertyChanged( "Notes" );
+        }
+
+        private async void OnGenerate( object parameter ) {
+
+            string result = await Application.Current.MainPage.DisplayActionSheet( "Difficulty", "Cancel", null, "Easy", "Medium", "Hard" );
+            if ( result == "Cancel" ) {
+                return;
+            }
+
+            Sudoku.GenerateRandom( (Difficulty)EnumConverter.ConvertBack( result, typeof( Difficulty ) ) );
+        }
+
+        private void OnHint( object parameter ) {
+
+            foreach ( var cell in Sudoku.Cells ) {
+
+                if ( cell.HasValue ) {
+                    continue;
+                }
+
+                cell.Value = cell.SolutionCell.Value;
+
+                return;
+            }
+        }
+
+        private IEnumerable<int> GetNotesForCell( CellModel cell ) {
+
+            for ( int num = 0 + 1; num < 9 + 1; num++ ) {
+
+                if ( cell.Square.Contains( num ) ) {
+                    continue;
+                }
+
+                if ( cell.Row.Contains( num ) ) {
+
+                    continue;
+                }
+
+                if ( cell.Square.Contains( num ) ) {
+
+                    continue;
+                }
+
+                yield return num;
+            }
+        }
+
+        private void OnFillNotes( object parameter ) {
+
+            foreach ( var cell in Sudoku.Cells ) {
+
+                if ( cell.HasValue ) {
+                    continue;
+                }
+
+                cell.Notes.Clear();
+
+                foreach ( var note in GetNotesForCell( cell ) ) {
+
+                    cell.Notes.Add( note );
+                }
+
+                cell.RaisePropertyChanged( "Notes" );
+            }
+        }
+
+        private void OnReset( object parameter ) {
+
+            foreach ( var cell in Sudoku.Cells ) {
+
+                if ( cell.IsConstant ) {
+
+                    continue;
+                }
+
+                cell.Reset( 0 );
+            }
+        }
+
     }
 }

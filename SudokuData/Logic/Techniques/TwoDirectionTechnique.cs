@@ -1,11 +1,10 @@
 ﻿using SudokuData;
-using Sudokus.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Sudokus.Logic.Techniques {
+namespace SudokuData.Logic.Techniques {
 
     public class TwoDirectionTechnique : Technique {
 
@@ -21,7 +20,7 @@ namespace Sudokus.Logic.Techniques {
                     continue;
                 }
 
-                foreach ( int option in Solver.GetOptions( cell ).ToArray() ) {
+                foreach ( int option in cell.Notes.ToArray() ) {
 
                     foreach ( var structure in cell.Structures ) {
 
@@ -29,7 +28,7 @@ namespace Sudokus.Logic.Techniques {
                             continue;
                         }
 
-                        Solver.GetOptions( cell ).Remove( option );
+                        cell.Notes.Remove( option );
                         break;
                     }
                 }
